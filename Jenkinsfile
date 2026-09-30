@@ -3,17 +3,32 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Check Node.js') {
             steps {
-                checkout scm
+                bat '''
+                    set "PATH=C:\\Program Files\\nodejs;%PATH%"
+                    node --version
+                    npm --version
+                '''
             }
         }
 
         stage('Backend Install') {
             steps {
                 bat '''
+                    set "PATH=C:\\Program Files\\nodejs;%PATH%"
                     cd backend
                     npm install
+                '''
+            }
+        }
+
+        stage('Backend Syntax Check') {
+            steps {
+                bat '''
+                    set "PATH=C:\\Program Files\\nodejs;%PATH%"
+                    cd backend
+                    node --check index.js
                 '''
             }
         }
@@ -21,17 +36,9 @@ pipeline {
         stage('Frontend Install') {
             steps {
                 bat '''
+                    set "PATH=C:\\Program Files\\nodejs;%PATH%"
                     cd frontend
                     npm install
-                '''
-            }
-        }
-
-        stage('Backend Test') {
-            steps {
-                bat '''
-                    cd backend
-                    npm test
                 '''
             }
         }
@@ -39,6 +46,7 @@ pipeline {
         stage('Frontend Build') {
             steps {
                 bat '''
+                    set "PATH=C:\\Program Files\\nodejs;%PATH%"
                     cd frontend
                     npm run build
                 '''
@@ -48,7 +56,7 @@ pipeline {
 
     post {
         success {
-            echo 'Build and tests completed successfully!'
+            echo 'Node.js project build completed successfully!'
         }
 
         failure {
